@@ -103,6 +103,7 @@ public class ServSentDataClient extends Thread {
 									dat.close();
 								}
 							}
+							check=0;
 						}
 						if (str.length == 4 && str[0].equals("chat")) {
 							sentData(line);
@@ -151,3 +152,5 @@ public class ServSentDataClient extends Thread {
 
 	}
 }
+
+
