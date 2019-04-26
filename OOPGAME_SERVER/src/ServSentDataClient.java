@@ -12,49 +12,56 @@ import java.text.SimpleDateFormat;
 import java.util.Stack;
 
 public class ServSentDataClient extends Thread {
-	public String[] card = new String[52];
 	public Stack stackk = new Stack();
 	int[] ranCard = new int[52];
-
+	public int card[] = new int[52];
+	public int dekCard[] = new int[52];
+	public int checkCard[] = new int[52];
 	public ServSentDataClient() {
-		int j = 1;
-		int c = 1;
-		for (int i = 0; i < card.length; i++) {
-			card[i] = "" + (j) + "-" + (c);
-			System.out.println("card : " + card[i] + " " + i);
-			if (c == 4) {
-				c = 0;
-				j++;
-			}
-			c++;
-		}
-		// **** random
+//		int j = 1;
+//		int c = 1;
 //		for (int i = 0; i < card.length; i++) {
-//			boolean check = false;
-//			int ran = 0;
-//			ran = (int) (Math.random()*51);
-//			
-//			if(i==0) {
-//				System.out.println("Success");
-//				ranCard[i] = ""+ran;
-//				System.out.println(ranCard[i]+" "+i);
-//				continue;
+//			card[i] = "" + (j) + "-" + (c);
+//			System.out.println("card : " + card[i] + " " + i);
+//			if (c == 4) {
+//				c = 0;
+//				j++;
 //			}
-//			for (int k = 0; k < ranCard.length; k++) {
-//				String xx = ""+ran;
-//				if(ranCard[k].equals(xx)) {
-//					check = true;
-//					break;
-//				}
-//			}
-//			if(check==false) {
-//				ranCard[i] = ""+ran;
-//				stackk.push(ranCard);
-//				System.out.println(ranCard[i]+" "+i);
-//			}else {
-//				i--;
-//			}
+//			c++;
 //		}
+//		
+
+		for (int i=0 ; i<card.length ; i++){
+			card[i] = i+1;
+		}
+		for (int i=0 ; i<dekCard.length; i++){
+			int random = (int) (Math.random()*52);
+			if(i==0){
+				dekCard[i] = random;
+				stackk.push(dekCard[i]);
+				checkCard[random] = 1;
+			}
+			else {
+				if(checkCard[random]==0) {
+					dekCard[i] = random;
+					stackk.push(dekCard[i]);
+					checkCard[random] = 1;
+				}
+				else {
+					i--;
+				}
+			}
+		}
+		for (int i = 0; i < dekCard.length; i++) {
+			if(i==0) {
+				System.out.print(dekCard[i]+"\t");
+			}
+			else {
+				System.out.print(dekCard[i]+"\t");
+				if(i%10==0)
+					System.out.println();
+			}
+		}
 	}
 
 	public void run() {
@@ -85,14 +92,14 @@ public class ServSentDataClient extends Thread {
 							sentData(line);
 						}
 						if (check == 3) {
-							for (int i = 0; i < 3; i++) {
+							for (int i = 0; i < 2; i++) {
 								for (int j = 0; j < BroadcastServer.stack.length-1; j++) {
 									
 									Socket sock = new Socket(BroadcastServer.stack[j], 50113);
 									PrintStream dat = new PrintStream(sock.getOutputStream());
-									line = "set-"+((int)(Math.random()*51+0));
-									System.out.println(line+""+BroadcastServer.stack[j]);
-									dat.println(line+""+BroadcastServer.stack[j]);
+									line = BroadcastServer.stack[j]+"-"+stackk.pop()+"-"+j;
+									System.out.println(line+" "+BroadcastServer.stack[j]);
+									dat.println(line);
 									dat.close();
 								}
 							}
