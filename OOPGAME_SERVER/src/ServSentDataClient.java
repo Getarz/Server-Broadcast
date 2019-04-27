@@ -22,6 +22,8 @@ public class ServSentDataClient extends Thread {
 	public int pointCard[] = new int[52];
 	public int pointPlayer[] = new int[4];
 	public String imagePlayer[] = new String[3];
+	public String name[] = new String[3];
+	public String lineBot[] = new String[3];
 	
 	public ServSentDataClient() {
 		for (int i = 0; i < card.length; i++) {
@@ -105,45 +107,105 @@ public class ServSentDataClient extends Thread {
 								if (str[0].equals(BroadcastServer.stack[j])) {
 									line = line + "-" + j;
 									imagePlayer[j] = str[1];
+									name[j] = str[2];
 								}
 							}
 							check++;
 							System.out.println("check : " + check);
 							sentData(line);
 						}
+						
+					////////////////////////////////////////////////////////////////
 						if (check == 3) {
 							int keep = 3;
-							for (int i = 0; i < 2; i++) {
-								for (int j = 0; j < BroadcastServer.stack.length - 1; j++) {
-									int pop = (int) stackk.pop();
-									Socket sock = new Socket(BroadcastServer.stack[j], 50113);
-									PrintStream dat = new PrintStream(sock.getOutputStream());
-									line = BroadcastServer.stack[j] + "-" + pop + "-" + j;
-									System.out.println(line + " " + BroadcastServer.stack[j]);
-									System.out.println("Point card : " + pointCard[pop] + " index " + pop);
-									pointPlayer[j] = (pointPlayer[j] + pointCard[pop]) % 10;
-									pop = (int) stackk.pop();
-									pointPlayer[3] = (pointPlayer[3] + pointCard[pop]) % 10;
-									dat.println(line);
-									dat.close();
+							int p=5;
+							while(true) {
+								try {
+								Thread.sleep(800);
+								sentData("chat-server->>Game start in-"+p);
+									if (p <=0) {
+										break;
+									}
+								p--;
+								} catch (Exception e) {
+									// TODO: handle exception
 								}
 							}
-							System.out.println("PLayer " + 0 + " : " + pointPlayer[0]);
-							System.out.println("PLayer " + 1 + " : " + pointPlayer[1]);
-							System.out.println("PLayer " + 2 + " : " + pointPlayer[2]);
-							System.out.println("Bot " + 3 + " : " + pointPlayer[3]);
+							//************************************
+							for (int i = 0; i < 2; i++) {
+								for (int j = 0; j < BroadcastServer.stack.length; j++) {
+									int pop = (int) stackk.pop();
+									System.out.println("Point card : " + pointCard[pop] + " index " + pop);
+									pointPlayer[j] = (pointPlayer[j] + pointCard[pop]) % 10;
+									line = BroadcastServer.stack[j] + "-" + pop + "-" + j;
+									if(j<3) {
+										Socket sock = new Socket(BroadcastServer.stack[j], 50113);
+										PrintStream dat = new PrintStream(sock.getOutputStream());
+										System.out.println(line + " " + BroadcastServer.stack[j]);
+										dat.println(line);
+										dat.close();
+									}
+									else {
+										lineBot[i] = "bot" + "-" + pop + "-" + j;
+										
+									}
+								}
+							}
+					//*******************************************
+							p=0;
+							while(true) {
+								try {
+								Thread.sleep(1000);
+								
+									if (p ==3) {
+										break;
+									}
+								p++;
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
+							}
+							for (int i = 0; i < 2; i++) {
+								sentData(lineBot[i]);
+							}
+
+							System.out.println(">>PLayer " + 0 + " : " + pointPlayer[0]);
+							System.out.println(">>PLayer " + 1 + " : " + pointPlayer[1]);
+							System.out.println(">>PLayer " + 2 + " : " + pointPlayer[2]);
+							System.out.println(">>Bot " + 3 + " : " + pointPlayer[3]);
+							
+					//***************************************************
+							p=1;
+							while(true) {
+								try {
+								Thread.sleep(1000);
+									if (p == 5) {
+										break;
+									}
+								p++;
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
+							}
 							
 							for (int i = 0; i < 3; i++) {
 								if (pointPlayer[3] < pointPlayer[i]) {
 									int s = Integer.parseInt(imagePlayer[i]);
-									sentData("win",BroadcastServer.stack[i],s);
-								}
-								else {
-									sentData("lost",BroadcastServer.stack[i],5);
+									Socket socke = new Socket(BroadcastServer.stack[i], 50113);
+									PrintStream data1 = new PrintStream(socke.getOutputStream());
+									data1.println("win" + "-" + BroadcastServer.stack[i] + "-" + imagePlayer[i]);
+									data1.close();
+								} else {
+									Socket s = new Socket(BroadcastServer.stack[i], 50113);
+									PrintStream d1 = new PrintStream(s.getOutputStream());
+									d1.println("lost" + "-" + BroadcastServer.stack[i] + "-" + 5);
+									d1.close();
 								}
 							}
-							System.out.println("Winner : "+pointPlayer[keep]);
-							
+							sentData("chat-192.168.1.16->>Player "+ name[0] + "-" + pointPlayer[0]);
+							sentData("chat-192.168.1.16->>Player "+ name[1] + "-" + pointPlayer[1]);
+							sentData("chat-192.168.1.16->>Player "+ name[2] + "-" + pointPlayer[2]);
+							sentData("chat-192.168.1.16->>Bot "+"-" + pointPlayer[3]);
 							check = 0;
 						}
 						if (str.length == 4 && str[0].equals("chat")) {
@@ -191,21 +253,21 @@ public class ServSentDataClient extends Thread {
 
 	}
 
-	public void sentData(String word, String string,int i) {
+	public void sentData(String word, String string, int i) {
 		try {
 			Socket socket1 = new Socket(BroadcastServer.stack[0], 50113);
 			PrintStream dataOut = new PrintStream(socket1.getOutputStream());
-			dataOut.println(word+"-"+string+"-"+i);
+			dataOut.println(word + "-" + string + "-" + i);
 			dataOut.close();
 
 			Socket socket2 = new Socket(BroadcastServer.stack[1], 50113);
 			PrintStream dataOut2 = new PrintStream(socket2.getOutputStream());
-			dataOut2.println(word+"-"+string+"-"+i);
+			dataOut2.println(word + "-" + string + "-" + i);
 			dataOut2.close();
 
 			Socket socket3 = new Socket(BroadcastServer.stack[2], 50113);
 			PrintStream dataOut3 = new PrintStream(socket3.getOutputStream());
-			dataOut3.println(word+"-"+string+"-"+i);
+			dataOut3.println(word + "-" + string + "-" + i);
 			dataOut3.close();
 
 //			Socket socket4 = new Socket(BroadcastServer.stack[3],50113);
@@ -216,5 +278,27 @@ public class ServSentDataClient extends Thread {
 			// TODO: handle exception
 		}
 
+	}
+}
+
+class waitWin extends Thread {
+	@Override
+	public void run() {
+		int i=1;
+		while(true) {
+			
+			try {
+				Thread.sleep(1000);
+				System.out.println(i);
+				if(i==10) {
+					
+					break;
+				}
+				i++;
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		
 	}
 }
