@@ -24,6 +24,7 @@ public class ServSentDataClient extends Thread {
 	public String imagePlayer[] = new String[3];
 	public String name[] = new String[3];
 	public String lineBot[] = new String[3];
+	public int money[] = new int[4];
 	
 	public ServSentDataClient() {
 		for (int i = 0; i < card.length; i++) {
@@ -193,14 +194,20 @@ public class ServSentDataClient extends Thread {
 									int s = Integer.parseInt(imagePlayer[i]);
 									Socket socke = new Socket(BroadcastServer.stack[i], 50113);
 									PrintStream data1 = new PrintStream(socke.getOutputStream());
-									data1.println("win" + "-" + BroadcastServer.stack[i] + "-" + imagePlayer[i]);
+									money[i] = money[i]+500;
+									money[3] = money[3]-500;
+									data1.println("Win" + "-" + BroadcastServer.stack[i] + "-" + imagePlayer[i]+"-"+i+"-"+"win");
 									data1.close();
 								} else {
 									Socket s = new Socket(BroadcastServer.stack[i], 50113);
 									PrintStream d1 = new PrintStream(s.getOutputStream());
-									d1.println("lost" + "-" + BroadcastServer.stack[i] + "-" + 5);
+									money[i] = money[i]-500;
+									money[3] = money[3]+500;
+									d1.println("Lost" + "-" + BroadcastServer.stack[i] + "-" + 5 +"-"+i+"-"+"lost");
 									d1.close();
 								}
+								int m  = money[i];
+								sentData("money"+"-"+m+"-"+i);
 							}
 							sentData("chat-192.168.1.16->>Player "+ name[0] + "-" + pointPlayer[0]);
 							sentData("chat-192.168.1.16->>Player "+ name[1] + "-" + pointPlayer[1]);
