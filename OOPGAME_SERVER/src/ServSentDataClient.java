@@ -190,6 +190,7 @@ public class ServSentDataClient extends Thread {
 							}
 							
 							for (int i = 0; i < 3; i++) {
+								money[i]=5000;
 								if (pointPlayer[3] < pointPlayer[i]) {
 									int s = Integer.parseInt(imagePlayer[i]);
 									Socket socke = new Socket(BroadcastServer.stack[i], 50113);
