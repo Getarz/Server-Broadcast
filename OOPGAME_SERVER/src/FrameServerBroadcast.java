@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,18 +10,10 @@ import javax.swing.JTextArea;
 
 public class FrameServerBroadcast extends JFrame {
 	public JPanel panel = new JPanel(null);
-	public JTextArea text = new JTextArea();
+	public TextArea text = new TextArea("",10,10,TextArea.SCROLLBARS_VERTICAL_ONLY);
 	public JButton but = new JButton();
-	public static void main(String[] args) {
-		FrameServerBroadcast frame = new FrameServerBroadcast();
-
-		frame.frame();
-		frame.setVisible(true);
-
-	}
-	public void frame() {
-//		ServSentDataClient s = new ServSentDataClient(this);
-//		s.start();
+	
+	public FrameServerBroadcast(){
 		setTitle("Broadcast Server");
 		setSize(400	, 610);
 		setLocationRelativeTo(null);
@@ -36,20 +29,32 @@ public class FrameServerBroadcast extends JFrame {
 		but.setSize(100, 50);
 		but.setLocation(150, 520);
 		but.setText("Start");
-		but.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				BroadcastServer b = new BroadcastServer();
-				b.start();
-				
-			}
-		});
-		
+		but.addActionListener(new clickBut(this));
 		add(but);
 		add(text);
 		add(panel);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setVisible(true);
+	}
+	public static void main(String[] args) {
+		
 	}
 
+}
+
+class clickBut implements ActionListener{
+	FrameServerBroadcast frame;
+	public clickBut(FrameServerBroadcast frameServerBroadcast) {
+		this.frame = frameServerBroadcast;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		BroadcastServer b = new BroadcastServer(frame);
+		ServSentDataClient s = new ServSentDataClient(frame);
+		s.start();
+		b.start();
+	}
+	
 }

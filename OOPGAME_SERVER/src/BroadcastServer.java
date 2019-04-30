@@ -13,8 +13,16 @@ public class BroadcastServer extends Thread {
 	static String[] stack = new String[4];
 	int check = 0;
 	static boolean checkTrue = false;
-
+	FrameServerBroadcast frame;
+	
 	public BroadcastServer() {
+		for (int i = 0; i < stack.length; i++) {
+			stack[i] = "no";
+		}
+	}
+
+	public BroadcastServer(FrameServerBroadcast frameServerBroadcast) {
+		this.frame = frameServerBroadcast;
 		for (int i = 0; i < stack.length; i++) {
 			stack[i] = "no";
 		}
@@ -23,20 +31,24 @@ public class BroadcastServer extends Thread {
 	@Override
 	public void run() {
 		try {
-			// Keep a socket open to listen to all the UDP trafic that is destined for this
-			// port
 			socket = new DatagramSocket(9999, InetAddress.getByName("0.0.0.0"));
 			socket.setBroadcast(true);
 			while (true) {
+				String line;
 				System.out.println(getClass().getName() + ">>>Ready to receive broadcast packets!");
+				frame.text.append( "BroadcastServer"+ ">>>Ready to receive broadcast packets!"+"\n");
 				byte[] recvBuf = new byte[15000];
 				System.out.println("Wait..");
+				frame.text.append("Wait.."+"\n");
+				//frame.revalidate();
 				DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
 				socket.receive(packet);
 				System.out.println(getClass().getName() + ">>>Discovery packet received from: "
 						+ packet.getAddress().getHostAddress());
+				frame.text.append(getClass().getName() + ">>>Discovery packet received from: "
+						+ packet.getAddress().getHostAddress()+"\n");
 				System.out.println(getClass().getName() + ">>>Packet received; data: " + new String(packet.getData()));
-
+				frame.text.append(getClass().getName() + ">>>Packet received; data: " + new String(packet.getData())+"\n");
 
 
 				String message = new String(packet.getData()).trim();
@@ -49,16 +61,19 @@ public class BroadcastServer extends Thread {
 						} else {
 							checkTrue = false;
 							System.out.println("Get in " + i + " IP " + packet.getAddress().getHostAddress());
+							frame.text.setText("Get in " + i + " IP " + packet.getAddress().getHostAddress()+"\n");
 						}
 					}
 				}
 				if (checkTrue == false) {
 					System.out.println("Success ! ! !");
+					frame.text.append("Success ! ! !"+"\n");
 					stack[check] = packet.getAddress().getHostAddress();
 					check++;
 				}
 				for (int i = 0; i < stack.length; i++) {
 					System.out.println(stack[i]);
+					frame.text.append(stack[i]+"\n");
 				}
 				boolean xx = stack[0].equals("no") || stack[1].equals("no") || stack[2].equals("no");
 				byte[] sendData = "Welcome".getBytes();
@@ -67,6 +82,7 @@ public class BroadcastServer extends Thread {
 				socket.send(sendPacket);
 				System.out.println(
 						getClass().getName() + ">>>Sent packet to: " + sendPacket.getAddress().getHostAddress());
+				frame.text.append(getClass().getName() + ">>>Sent packet to: " + sendPacket.getAddress().getHostAddress()+"\n");
 				if (xx == false) {
 					
 					System.out.println("Stop ! ! !");
