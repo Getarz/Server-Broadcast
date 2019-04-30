@@ -185,18 +185,7 @@ public class ServSentDataClient extends Thread {
 									+">>PLayer " + 2 + " : " + pointPlayer[2]+"\n"
 									+">>Bot " + 3 + " : " + pointPlayer[3]+"\n");
 							///////////////// Thread wait to show pointPlayer /////////////////
-//							p=1;
-//							while(true) {
-//								try {
-//								Thread.sleep(1000);
-//									if (p == 5) {
-//										break;
-//									}
-//								p++;
-//								} catch (Exception e) {
-//									// TODO: handle exception
-//								}
-//							}
+
 							
 							///////////////// Check winer and calculate money player /////////////////
 							
@@ -246,12 +235,28 @@ public class ServSentDataClient extends Thread {
 									}
 									int m  = money[i];
 									sentData("money"+"-"+m+"-"+i);
+									if(i<2) {
+										sentData(lineBot[i]);
+									}
 								}
 								sentData("chat-192.168.1.16->>Player "+ name[0] + "-" + pointPlayer[0]);
 								sentData("chat-192.168.1.16->>Player "+ name[1] + "-" + pointPlayer[1]);
 								sentData("chat-192.168.1.16->>Player "+ name[2] + "-" + pointPlayer[2]);
 								sentData("chat-192.168.1.16->>Bot "+"-" + pointPlayer[3]);
 								check = 0;
+								
+//								p=1;
+//								while(true) {
+//									try {
+//									Thread.sleep(1000);
+//										if (p == 5) {
+//											break;
+//										}
+//									p++;
+//									} catch (Exception e) {
+//										// TODO: handle exception
+//									}
+//								}
 							}
 							frame.text.append("Check player : " +checkPlayer+"\n");
 						}
