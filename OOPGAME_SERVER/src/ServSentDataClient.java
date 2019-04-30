@@ -103,6 +103,8 @@ public class ServSentDataClient extends Thread {
 					while ((line = bufferIn.readLine()) != null) {
 						String[] str = line.split("-");
 						System.out.println("Length of : " + str.length);
+						
+						///////////////// Wait player come to server  /////////////////
 						if (str.length == 3) {
 							for (int j = 0; j < str.length; j++) {
 								if (str[0].equals(BroadcastServer.stack[j])) {
@@ -116,7 +118,7 @@ public class ServSentDataClient extends Thread {
 							sentData(line);
 						}
 						
-					////////////////////////////////////////////////////////////////
+						/////////////////////// when player come all tree //////////////////////////
 						if (check == 3) {
 							int keep = 3;
 							int p=5;
@@ -127,12 +129,11 @@ public class ServSentDataClient extends Thread {
 									if (p <=0) {
 										break;
 									}
-								p--;
-								} catch (Exception e) {
-									// TODO: handle exception
-								}
+									p--;
+								} catch (Exception e) {}
 							}
-							//************************************
+							
+							//////////////////   Draw card from Stack /////////////////////
 							for (int i = 0; i < 2; i++) {
 								for (int j = 0; j < BroadcastServer.stack.length; j++) {
 									int pop = (int) stackk.pop();
@@ -148,23 +149,20 @@ public class ServSentDataClient extends Thread {
 									}
 									else {
 										lineBot[i] = "bot" + "-" + pop + "-" + j;
-										
 									}
 								}
 							}
-					//*******************************************
+							
+							///////////////// Thread wait to show card bot /////////////////
 							p=0;
 							while(true) {
 								try {
 								Thread.sleep(1000);
-								
 									if (p ==3) {
 										break;
 									}
-								p++;
-								} catch (Exception e) {
-									// TODO: handle exception
-								}
+									p++;
+								} catch (Exception e) {}
 							}
 							for (int i = 0; i < 2; i++) {
 								sentData(lineBot[i]);
@@ -175,7 +173,7 @@ public class ServSentDataClient extends Thread {
 							System.out.println(">>PLayer " + 2 + " : " + pointPlayer[2]);
 							System.out.println(">>Bot " + 3 + " : " + pointPlayer[3]);
 							
-					//***************************************************
+							///////////////// Thread wait to show pointPlayer /////////////////
 							p=1;
 							while(true) {
 								try {
@@ -189,6 +187,7 @@ public class ServSentDataClient extends Thread {
 								}
 							}
 							
+							///////////////// Check winer and calculate money player /////////////////
 							for (int i = 0; i < 3; i++) {
 								money[i]=5000;
 								if (pointPlayer[3] < pointPlayer[i]) {
@@ -216,22 +215,20 @@ public class ServSentDataClient extends Thread {
 							sentData("chat-192.168.1.16->>Bot "+"-" + pointPlayer[3]);
 							check = 0;
 						}
+						
+						///////////////// Check to chat  /////////////////
 						if (str.length == 4 && str[0].equals("chat")) {
 							sentData(line);
 						}
-
 					}
 					bufferIn.close();
-
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
-
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
 	}
 
 	public void sentData(String line) {
@@ -289,24 +286,3 @@ public class ServSentDataClient extends Thread {
 	}
 }
 
-class waitWin extends Thread {
-	@Override
-	public void run() {
-		int i=1;
-		while(true) {
-			
-			try {
-				Thread.sleep(1000);
-				System.out.println(i);
-				if(i==10) {
-					
-					break;
-				}
-				i++;
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-		}
-		
-	}
-}
