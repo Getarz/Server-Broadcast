@@ -154,7 +154,7 @@ public class ServSentDataClient extends Thread {
 								for ( ;i < 2; i++) {
 									for (int j = 0; j < BroadcastServer.stack.length; j++) {
 										try {
-											Thread.sleep(1000);
+											Thread.sleep(700);
 											} 
 										catch (Exception e) {}
 										
@@ -248,23 +248,24 @@ public class ServSentDataClient extends Thread {
 						
 					///////////////// Check Draw card  /////////////////
 						if((str.length==3)&&(str[0].equals("Draw")||str[0].equals("Pass"))) {
-							System.out.println("Check draw ....");
-							frame.text.append("\n"+"Draw from ip : "+str[1]+"\n");
-							int pos = Integer.parseInt(str[2]);
-							int pop = (int) stackk.pop();
-							if(str[0].equals("Draw")) {
-								cardPlayer[pos][2]=pop;
-								System.out.println("Point card : " + pointCard[pop] + " index " + pop);
-								pointPlayer[pos] = (pointPlayer[pos] + pointCard[pop]) % 10;
-								frame.text.append("\n"+"Point last draw : "+pointPlayer[pos]+"\n");
-								line = str[1] + "-" + pop + "-" + pos + "-" +"Draw";
-								sentData(line);
-								checkPlayer++;
-							}
-							else if (str[0].equals("Pass")) {
-								cardPlayer[pos][2]=-1;
-								checkPlayer++;
-							}
+							drawCard(line);
+//							System.out.println("Check draw ....");
+//							frame.text.append("\n"+"Draw from ip : "+str[1]+"\n");
+//							int pos = Integer.parseInt(str[2]);
+//							int pop = (int) stackk.pop();
+//							if(str[0].equals("Draw")) {
+//								cardPlayer[pos][2]=pop;
+//								System.out.println("Point card : " + pointCard[pop] + " index " + pop);
+//								pointPlayer[pos] = (pointPlayer[pos] + pointCard[pop]) % 10;
+//								frame.text.append("\n"+"Point last draw : "+pointPlayer[pos]+"\n");
+//								line = str[1] + "-" + pop + "-" + pos + "-" +"Draw";
+//								sentData(line);
+//								checkPlayer++;
+//							}
+//							else if (str[0].equals("Pass")) {
+//								cardPlayer[pos][2]=-1;
+//								checkPlayer++;
+//							}
 							if(checkPlayer==3) {
 								int p=0;
 								while(true) {
@@ -385,10 +386,6 @@ public class ServSentDataClient extends Thread {
 			dataOut3.print(line);
 			dataOut3.close();
 
-//			Socket socket4 = new Socket(BroadcastServer.stack[3],50113);
-//			PrintStream dataOut4 = new PrintStream(socket4.getOutputStream());
-//			dataOut4.print(line);
-//			dataOut4.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -412,14 +409,30 @@ public class ServSentDataClient extends Thread {
 			dataOut3.println(word + "-" + string + "-" + i);
 			dataOut3.close();
 
-//			Socket socket4 = new Socket(BroadcastServer.stack[3],50113);
-//			PrintStream dataOut4 = new PrintStream(socket4.getOutputStream());
-//			dataOut4.print(line);
-//			dataOut4.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 
+	}
+	public void drawCard(String line) {
+		String str[] =line.split("-");
+		System.out.println("Check draw ....");
+		frame.text.append("\n"+"Draw from ip : "+str[1]+"\n");
+		int pos = Integer.parseInt(str[2]);
+		int pop = (int) stackk.pop();
+		if(str[0].equals("Draw")) {
+			cardPlayer[pos][2]=pop;
+			System.out.println("Point card : " + pointCard[pop] + " index " + pop);
+			pointPlayer[pos] = (pointPlayer[pos] + pointCard[pop]) % 10;
+			frame.text.append("\n"+"Point last draw : "+pointPlayer[pos]+"\n");
+			line = str[1] + "-" + pop + "-" + pos + "-" +"Draw";
+			sentData(line);
+			checkPlayer++;
+		}
+		else if (str[0].equals("Pass")) {
+			cardPlayer[pos][2]=-1;
+			checkPlayer++;
+		}
 	}
 }
 
