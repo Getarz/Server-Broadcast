@@ -181,7 +181,14 @@ public class ServSentDataClient extends Thread {
 								if(i==2) {
 									break;
 								}
-								
+							}
+							if (pointPlayer[3]<6) {
+								int pointDraw3 = (int)stackk.pop();
+								lineBot[2] = "bot" + "-" + pointDraw3 + "-" + 3;
+								pointPlayer[3] = pointPlayer[3]+pointCard[pointDraw3];
+							}
+							else if (pointPlayer[3]>=6) {
+								lineBot[2] = "bot" + "-" + "+1" + "-" + 3;
 							}
 							
 							//////////////////   Draw card from Stack /////////////////////
@@ -274,8 +281,13 @@ public class ServSentDataClient extends Thread {
 										if (p == 5) {
 											break;
 										}
-										if(p<2) {
-											sentData(lineBot[p]);
+										if(p<=2) {
+											String spt[] = lineBot[p].split("-");
+											if (spt[1].equals("+1")) {
+												
+											}
+											else
+												sentData(lineBot[p]);
 										}
 							
 									p++;
