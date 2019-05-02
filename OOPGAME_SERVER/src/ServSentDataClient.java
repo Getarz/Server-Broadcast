@@ -90,6 +90,9 @@ public class ServSentDataClient extends Thread {
 			}
 			System.out.println(pointCard[i] + " " + i + " ");
 		}
+		for (int i = 0; i < money.length; i++) {
+			money[i]=5000;
+		}
 	}
 
 	public void run() {
@@ -269,13 +272,13 @@ public class ServSentDataClient extends Thread {
 								
 							///////////////// Check winer and calculate money player /////////////////
 							for (int i = 0; i < 3; i++) {
-								money[i]=5000;
+								
 								if (pointPlayer[3] < pointPlayer[i]) {
 									int s = Integer.parseInt(imagePlayer[i]);
 									Socket socke = new Socket(BroadcastServer.stack[i], 50113);
 									PrintStream data1 = new PrintStream(socke.getOutputStream());
 									money[i] = money[i]+500;
-									money[3] = money[3]-500;
+									//money[3] = money[3]-500;
 									winer[i]="Win" + "-" + BroadcastServer.stack[i] + "-" + imagePlayer[i]+"-"+i+"-"+"win";
 									data1.println("Win" + "-" + BroadcastServer.stack[i] + "-" + imagePlayer[i]+"-"+i+"-"+"win");
 									data1.close();
@@ -283,7 +286,7 @@ public class ServSentDataClient extends Thread {
 									Socket s = new Socket(BroadcastServer.stack[i], 50113);
 									PrintStream d1 = new PrintStream(s.getOutputStream());
 									money[i] = money[i]-500;
-									money[3] = money[3]+500;
+									//money[3] = money[3]+500;
 									winer[i]="Lost" + "-" + BroadcastServer.stack[i] + "-" + 5 +"-"+i+"-"+"lost";
 									d1.println("Lost" + "-" + BroadcastServer.stack[i] + "-" + 5 +"-"+i+"-"+"lost");
 									d1.close();
@@ -319,8 +322,13 @@ public class ServSentDataClient extends Thread {
 									// TODO: handle exception
 								}
 							}
-//							line = "SetDefault";
-//							sentData(line);
+							checkPlayer=0;
+							checkReady=0;
+							pointPlayer[0]=0;
+							pointPlayer[1]=0;
+							pointPlayer[2]=0;
+							pointPlayer[3]=0;
+							
 						}
 						frame.text.append("Check player : " +checkPlayer+"\n");
 						}
