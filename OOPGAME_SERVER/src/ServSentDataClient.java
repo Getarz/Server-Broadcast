@@ -148,6 +148,8 @@ public class ServSentDataClient extends Thread {
 									p--;
 								} catch (Exception e) {}
 							}
+							
+							/////////////// set card to player ///////////////////////
 							p=0;
 							while(true) {
 								int i = 0;
@@ -155,7 +157,7 @@ public class ServSentDataClient extends Thread {
 									for (int j = 0; j < BroadcastServer.stack.length; j++) {
 										try {
 											Thread.sleep(700);
-											} 
+										} 
 										catch (Exception e) {}
 										
 										int pop = (int) stackk.pop();
@@ -185,52 +187,13 @@ public class ServSentDataClient extends Thread {
 							if (pointPlayer[3]<6) {
 								int pointDraw3 = (int)stackk.pop();
 								lineBot[2] = "bot" + "-" + pointDraw3 + "-" + 3;
-								pointPlayer[3] = pointPlayer[3]+pointCard[pointDraw3];
+								pointPlayer[3] = (pointPlayer[3]+pointCard[pointDraw3])%10;
 							}
 							else if (pointPlayer[3]>=6) {
 								lineBot[2] = "bot" + "-" + "+1" + "-" + 3;
 							}
 							
-							//////////////////   Draw card from Stack /////////////////////
-//							for (int i = 0; i < 2; i++) {
-//								for (int j = 0; j < BroadcastServer.stack.length; j++) {
-//									int pop = (int) stackk.pop();
-//									System.out.println("Point card : " + pointCard[pop] + " index " + pop);
-//									frame.text.append("Point card : " + pointCard[pop] + " index " + pop+"\n");
-//									pointPlayer[j] = (pointPlayer[j] + pointCard[pop]) % 10;
-//									line = BroadcastServer.stack[j] + "-" + pop + "-" + j;
-//									if(j<3) {
-//										cardPlayer[j][i]=pop;
-//										Socket sock = new Socket(BroadcastServer.stack[j], 50113);
-//										PrintStream dat = new PrintStream(sock.getOutputStream());
-//										System.out.println(line + " " + BroadcastServer.stack[j]);
-//										frame.text.append(line + " " + BroadcastServer.stack[j]+"\n");
-//										dat.println(line);
-//										dat.close();
-//									}
-//									else {
-//										cardPlayer[j][i]=pop;
-//										lineBot[i] = "bot" + "-" + pop + "-" + j;
-//									}
-//								}
-//							}
-							
-							
-							
 							///////////////// Thread wait to show card bot /////////////////
-							p=0;
-//							while(true) {
-//								try {
-//								Thread.sleep(1000);
-//									if (p ==3) {
-//										break;
-//									}
-//									p++;
-//								} catch (Exception e) {}
-//							}
-//							for (int i = 0; i < 2; i++) {
-//								sentData(lineBot[i]);
-//							}
 
 							System.out.println(">>PLayer " + 0 + " : " + pointPlayer[0]);
 							System.out.println(">>PLayer " + 1 + " : " + pointPlayer[1]);
@@ -239,14 +202,8 @@ public class ServSentDataClient extends Thread {
 							frame.text.append(">>PLayer " + 0 + " : " + pointPlayer[0]+"\n"
 									+">>PLayer " + 1 + " : " + pointPlayer[1]+"\n"
 									+">>PLayer " + 2 + " : " + pointPlayer[2]+"\n"
-									+">>Bot " + 3 + " : " + pointPlayer[3]+"\n");
-						///////////////// Thread wait to show pointPlayer /////////////////
-
-							
-						
-							
-								
-						}
+									+">>Bot " + 3 + " : " + pointPlayer[3]+"\n");		
+					}
 						
 					///////////////// Check to chat  /////////////////
 					if (str.length == 4 && str[0].equals("chat")) {
@@ -254,49 +211,32 @@ public class ServSentDataClient extends Thread {
 					}
 						
 					///////////////// Check Draw card  /////////////////
-						if((str.length==3)&&(str[0].equals("Draw")||str[0].equals("Pass"))) {
-							drawCard(line);
-//							System.out.println("Check draw ....");
-//							frame.text.append("\n"+"Draw from ip : "+str[1]+"\n");
-//							int pos = Integer.parseInt(str[2]);
-//							int pop = (int) stackk.pop();
-//							if(str[0].equals("Draw")) {
-//								cardPlayer[pos][2]=pop;
-//								System.out.println("Point card : " + pointCard[pop] + " index " + pop);
-//								pointPlayer[pos] = (pointPlayer[pos] + pointCard[pop]) % 10;
-//								frame.text.append("\n"+"Point last draw : "+pointPlayer[pos]+"\n");
-//								line = str[1] + "-" + pop + "-" + pos + "-" +"Draw";
-//								sentData(line);
-//								checkPlayer++;
-//							}
-//							else if (str[0].equals("Pass")) {
-//								cardPlayer[pos][2]=-1;
-//								checkPlayer++;
-//							}
-							if(checkPlayer==3) {
-								int p=0;
-								while(true) {
-									try {
-									Thread.sleep(1000);
-										if (p == 5) {
-											break;
-										}
-										if(p<=2) {
-											String spt[] = lineBot[p].split("-");
-											if (spt[1].equals("+1")) {
-												
-											}
-											else
-												sentData(lineBot[p]);
-										}
-							
-									p++;
-									} catch (Exception e) {
-										// TODO: handle exception
+					if((str.length==3)&&(str[0].equals("Draw")||str[0].equals("Pass"))) {
+						drawCard(line);
+						if(checkPlayer==3) {
+							int p=0;
+							while(true) {
+								try {
+								Thread.sleep(1000);
+									if (p == 3) {
+										break;
 									}
+									if(p<=2) {
+										String spt[] = lineBot[p].split("-");
+										if (spt[1].equals("+1")) {
+											
+										}
+										else
+											sentData(lineBot[p]);
+									}
+								p++;
+								} catch (Exception e) {
+									// TODO: handle exception
 								}
-								if(p==5) {
-								////////////////////  set Back //////////////////////
+							}
+							
+							////////////////////  set card all to show  //////////////////////
+							if(p==3) {
 								for (int i = 0; i < 3; i++) {
 									for (int j = 0; j < 3; j++) {
 										if(cardPlayer[i][j]==-1) {}
@@ -308,67 +248,81 @@ public class ServSentDataClient extends Thread {
 											dataOut2.println(line);
 											dataOut2.close();
 										}
-									}
-														
-									frame.text.append("\n");
-									}
-								}
-								
-								
-								p=0;
-								while(true) {
-									try {
-									Thread.sleep(1000);
-										if (p == 3) {
-											break;
-										}
-									p++;
-									} catch (Exception e) {
-										// TODO: handle exception
-									}
-								}
-								
-							///////////////// Check winer and calculate money player /////////////////
-								for (int i = 0; i < 3; i++) {
-									money[i]=5000;
-									if (pointPlayer[3] < pointPlayer[i]) {
-										int s = Integer.parseInt(imagePlayer[i]);
-										Socket socke = new Socket(BroadcastServer.stack[i], 50113);
-										PrintStream data1 = new PrintStream(socke.getOutputStream());
-										money[i] = money[i]+500;
-										money[3] = money[3]-500;
-										winer[i]="Win" + "-" + BroadcastServer.stack[i] + "-" + imagePlayer[i]+"-"+i+"-"+"win";
-										data1.println("Win" + "-" + BroadcastServer.stack[i] + "-" + imagePlayer[i]+"-"+i+"-"+"win");
-										data1.close();
-									} else {
-										Socket s = new Socket(BroadcastServer.stack[i], 50113);
-										PrintStream d1 = new PrintStream(s.getOutputStream());
-										money[i] = money[i]-500;
-										money[3] = money[3]+500;
-										winer[i]="Lost" + "-" + BroadcastServer.stack[i] + "-" + 5 +"-"+i+"-"+"lost";
-										d1.println("Lost" + "-" + BroadcastServer.stack[i] + "-" + 5 +"-"+i+"-"+"lost");
-										d1.close();
-									}
-									int m  = money[i];
-									sentData("money"+"-"+m+"-"+i);
-									
-								}
-								sentData("chat-192.168.1.16->>Player "+ name[0] + "-" + pointPlayer[0]);
-								sentData("chat-192.168.1.16->>Player "+ name[1] + "-" + pointPlayer[1]);
-								sentData("chat-192.168.1.16->>Player "+ name[2] + "-" + pointPlayer[2]);
-								sentData("chat-192.168.1.16->>Bot "+"-" + pointPlayer[3]);
-								check = 0;
-								
-								
-							/////////////// show alll card //////////////////
-								for (int i = 0; i < 4; i++) {
-									for (int j = 0; j < 3; j++) {
-										frame.text.append(cardPlayer[i][j]+" ");
-									}
+									}					
 									frame.text.append("\n");
 								}
 							}
-							frame.text.append("Check player : " +checkPlayer+"\n");
+								
+							////////////////// Thread show winner  ////////////////////////////
+							p=0;
+							while(true) {
+								try {
+								Thread.sleep(1000);
+									if (p == 3) {
+										break;
+									}
+								p++;
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
+							}
+								
+							///////////////// Check winer and calculate money player /////////////////
+							for (int i = 0; i < 3; i++) {
+								money[i]=5000;
+								if (pointPlayer[3] < pointPlayer[i]) {
+									int s = Integer.parseInt(imagePlayer[i]);
+									Socket socke = new Socket(BroadcastServer.stack[i], 50113);
+									PrintStream data1 = new PrintStream(socke.getOutputStream());
+									money[i] = money[i]+500;
+									money[3] = money[3]-500;
+									winer[i]="Win" + "-" + BroadcastServer.stack[i] + "-" + imagePlayer[i]+"-"+i+"-"+"win";
+									data1.println("Win" + "-" + BroadcastServer.stack[i] + "-" + imagePlayer[i]+"-"+i+"-"+"win");
+									data1.close();
+								} else {
+									Socket s = new Socket(BroadcastServer.stack[i], 50113);
+									PrintStream d1 = new PrintStream(s.getOutputStream());
+									money[i] = money[i]-500;
+									money[3] = money[3]+500;
+									winer[i]="Lost" + "-" + BroadcastServer.stack[i] + "-" + 5 +"-"+i+"-"+"lost";
+									d1.println("Lost" + "-" + BroadcastServer.stack[i] + "-" + 5 +"-"+i+"-"+"lost");
+									d1.close();
+								}
+								int m  = money[i];
+								sentData("money"+"-"+m+"-"+i);
+							}
+							sentData("chat-192.168.1.16->>Player "+ name[0] + "-" + pointPlayer[0]);
+							sentData("chat-192.168.1.16->>Player "+ name[1] + "-" + pointPlayer[1]);
+							sentData("chat-192.168.1.16->>Player "+ name[2] + "-" + pointPlayer[2]);
+							sentData("chat-192.168.1.16->>Bot "+"-" + pointPlayer[3]);
+							check = 0;
+								
+							
+							/////////////// show alll card //////////////////
+							for (int i = 0; i < 4; i++) {
+								for (int j = 0; j < 3; j++) {
+									frame.text.append(cardPlayer[i][j]+" ");
+								}
+								frame.text.append("\n");
+							}
+							
+							//////////////////////////////////////////////////
+							p=0;
+							while(true) {
+								try {
+								Thread.sleep(1000);
+									if (p == 3) {
+										break;
+									}
+								p++;
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
+							}
+//							line = "SetDefault";
+//							sentData(line);
+						}
+						frame.text.append("Check player : " +checkPlayer+"\n");
 						}
 					}
 					bufferIn.close();
@@ -446,5 +400,7 @@ public class ServSentDataClient extends Thread {
 			checkPlayer++;
 		}
 	}
+	
+	
 }
 
