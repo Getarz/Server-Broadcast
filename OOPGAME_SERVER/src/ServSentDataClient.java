@@ -30,12 +30,14 @@ public class ServSentDataClient extends Thread {
 	public int checkReady =0;
 	public int cardPlayer[][] = new int [4][3];
 	public String winer[] = new String[4];
-
+	public int indexStack =0;
+	
 	public ServSentDataClient(FrameServerBroadcast frame) {
 		this.frame = frame;
 		for (int i = 0; i < card.length; i++) {
 			card[i] = i + 1;
 		}
+		/////////////      random card       ////////////////////////
 		for (int i = 0; i < dekCard.length; i++) {
 			int random = (int) (Math.random() * 52);
 			if (i == 0) {
@@ -52,15 +54,8 @@ public class ServSentDataClient extends Thread {
 				}
 			}
 		}
-		for (int i = 0; i < dekCard.length; i++) {
-			if (i == 0) {
-				System.out.print(dekCard[i] + "\t");
-			} else {
-				System.out.print(dekCard[i] + "\t");
-				if (i % 10 == 0)
-					System.out.println();
-			}
-		}
+		
+		//////////////////   point Card      ///////////////////////
 		int numcard2 = 1;
 		for (int i = 0; i < pointCard.length; i++) {
 			if (i >= 0 && i <= 9) {
@@ -143,7 +138,7 @@ public class ServSentDataClient extends Thread {
 							checkReady =0;
 							while(true) {
 								try {
-								Thread.sleep(800);
+								Thread.sleep(1100);
 								sentData("chat-server->>Game start in-"+p);
 									if (p <=0) {
 										break;
@@ -292,8 +287,11 @@ public class ServSentDataClient extends Thread {
 									d1.close();
 								}
 								int m  = money[i];
-								sentData("money"+"-"+m+"-"+i);
+								
 							}
+							sentData("money"+"-"+money[0]+"-"+0);
+							sentData("money"+"-"+money[1]+"-"+1);
+							sentData("money"+"-"+money[2]+"-"+2);
 							sentData("chat-192.168.1.16->>Player "+ name[0] + "-" + pointPlayer[0]);
 							sentData("chat-192.168.1.16->>Player "+ name[1] + "-" + pointPlayer[1]);
 							sentData("chat-192.168.1.16->>Player "+ name[2] + "-" + pointPlayer[2]);
@@ -328,6 +326,26 @@ public class ServSentDataClient extends Thread {
 							pointPlayer[1]=0;
 							pointPlayer[2]=0;
 							pointPlayer[3]=0;
+							
+							/////////////      random card       ////////////////////////
+						/*	for (int i = 0; i < dekCard.length; i++) {
+								int random = (int) (Math.random() * 52);
+								if (i == 0) {
+									dekCard[i] = random;
+									stackk.push(dekCard[i]);
+									checkCard[random] = 1;
+								} else {
+									if (checkCard[random] == 0) {
+										dekCard[i] = random;
+										stackk.push(dekCard[i]);
+										checkCard[random] = 1;
+									} else {
+										i--;
+									}
+								}
+							}*/
+							//setNewDek();
+							System.out.println("clear data ");
 							
 						}
 						frame.text.append("Check player : " +checkPlayer+"\n");
@@ -407,6 +425,11 @@ public class ServSentDataClient extends Thread {
 			cardPlayer[pos][2]=-1;
 			checkPlayer++;
 		}
+	}
+	
+	public void setNewDek() {
+		
+	
 	}
 	
 	
