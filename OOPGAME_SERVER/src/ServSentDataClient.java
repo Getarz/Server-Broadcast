@@ -327,24 +327,26 @@ public class ServSentDataClient extends Thread {
 							pointPlayer[2]=0;
 							pointPlayer[3]=0;
 							
+							for (int i = 0; i < checkCard.length; i++) {
+								checkCard[i]=0;
+							}
 							/////////////      random card       ////////////////////////
-						/*	for (int i = 0; i < dekCard.length; i++) {
+							for (int i = 0; i < dekCard.length; i++) {
 								int random = (int) (Math.random() * 52);
 								if (i == 0) {
-									dekCard[i] = random;
-									stackk.push(dekCard[i]);
+									//dekCard[i] = random;
+									stackk.push(random);
 									checkCard[random] = 1;
 								} else {
 									if (checkCard[random] == 0) {
 										dekCard[i] = random;
-										stackk.push(dekCard[i]);
+										stackk.push(random);
 										checkCard[random] = 1;
 									} else {
 										i--;
 									}
 								}
-							}*/
-							//setNewDek();
+							}
 							System.out.println("clear data ");
 							
 						}
